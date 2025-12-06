@@ -17,6 +17,8 @@ void caricaRubrica(Contatto rubrica[], int *n);
 void salvaRubrica(Contatto rubrica[], int n);
 void aggiungiContatto(Contatto rubrica[], int *n);
 void mostraContatti(Contatto rubrica[], int n);
+void cercaContatto(Contatto rubrica[], int n);
+
 
 int main() {
     Contatto rubrica[MAX_CONTATTI];
@@ -29,8 +31,10 @@ int main() {
         printf("\n=== RUBRICA CONTATTI ===\n");
         printf("1. Mostra contatti\n");
         printf("2. Aggiungi contatto\n");
+        printf("3. Cerca contatto\n");
         printf("0. Esci\n");
         printf("Scelta: ");
+        
         if (scanf("%d", &scelta) != 1) {
             int c;
             while ((c = getchar()) != '\n' && c != EOF) {}
@@ -45,12 +49,16 @@ int main() {
             case 2:
                 aggiungiContatto(rubrica, &numeroContatti);
                 break;
+            case 3:
+                cercaContatto(rubrica, numeroContatti);
+                break;
             case 0:
                 printf("Uscita...\n");
                 break;
             default:
                 printf("Scelta non valida.\n");
         }
+
     } while (scelta != 0);
 
     salvaRubrica(rubrica, numeroContatti);
@@ -133,5 +141,34 @@ void mostraContatti(Contatto rubrica[], int n) {
                rubrica[i].nome,
                rubrica[i].cognome,
                rubrica[i].telefono);
+    }
+}
+void cercaContatto(Contatto rubrica[], int n) {
+    if (n == 0) {
+        printf("La rubrica è vuota.\n");
+        return;
+    }
+
+    char ricerca[MAX_LUNG];
+    printf("Inserisci il nome o cognome da cercare: ");
+    fgets(ricerca, MAX_LUNG, stdin);
+    ricerca[strcspn(ricerca, "\n")] = '\0';
+
+    int trovati = 0;
+    printf("\n--- Risultati ricerca per \"%s\" ---\n", ricerca);
+    for (int i = 0; i < n; i++) {
+        if (strstr(rubrica[i].nome, ricerca) != NULL ||
+            strstr(rubrica[i].cognome, ricerca) != NULL) {
+            printf("%d) %s %s - %s\n",
+                   i + 1,
+                   rubrica[i].nome,
+                   rubrica[i].cognome,
+                   rubrica[i].telefono);
+            trovati++;
+        }
+    }
+
+    if (trovati == 0) {
+        printf("Nessun contatto trovato.\n");
     }
 }
